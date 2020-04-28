@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, CoinManagerDelegate {
+class ViewController: UIViewController {
     
     @IBOutlet weak var bitCoinLabel: UILabel!
     
@@ -27,6 +27,11 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         coinManager.delegate = self
     }
 
+}
+
+//MARK: - UIPickerViewDataSource
+
+extension ViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -34,18 +39,28 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return coinManager.currencyArray.count
     }
-   
+}
+
+//MARK: - UIPickerViewDelegate
+
+extension ViewController:  UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-         return coinManager.currencyArray[row]
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        print(row)
-        print(coinManager.currencyArray[row])
-        selectedRow = row
-        coinManager.getCoinPrice()
-    }
-    
+           return coinManager.currencyArray[row]
+      }
+      
+      func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+          print(row)
+          print(coinManager.currencyArray[row])
+          selectedRow = row
+          coinManager.getCoinPrice()
+      }
+}
+
+
+//MARK: - CoinManagerDelegate
+
+extension ViewController: CoinManagerDelegate {
+   
     func didUpdateCoin(_ coinManager: CoinManager, coin: CoinModel) {
         DispatchQueue.main.async {
             let currency = coinManager.currencyArray[self.selectedRow]
@@ -57,6 +72,5 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     func didFailWithError(_ coinManager: CoinManager, error: Error) {
         print(error)
     }
-    
 }
 
